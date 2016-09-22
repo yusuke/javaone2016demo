@@ -17,11 +17,8 @@ package ui;
 
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.impl.Navigator;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -29,54 +26,40 @@ import static com.codeborne.selenide.Selenide.*;
 import static org.junit.Assert.assertEquals;
 
 public class UITestWithPhantomJS {
-    private static Server server = null;
     @ClassRule
     public static PhantomJSResource PhantomJS = PhantomJSResource.getInstance();
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        int port = 8080;
-        if (!isPortInUse(port)) {
+        try(Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(8080), 200);
+            // the server is running
+        } catch (IOException e) {
             // nothing is listening on the port
-            WebAppContext context = new WebAppContext();
-            File webapp = new File("src/main/webapp/");
-            context.setWar(webapp.getAbsolutePath());
-            context.setContextPath("/");
-            server = new Server(port);
-            server.setHandler(context);
-            server.start();
+            startServer();
         }
+    }
+
+    private static void startServer() {
+        App.main();
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        if (server != null) {
-            server.stop();
-        }
         try {
             // ensure phantomjs to quit
             WebDriverRunner.getWebDriver().quit();
-        } catch (IllegalStateException ignored) {
+        } catch (Exception ignored) {
         }
 
-    }
-
-    private static boolean isPortInUse(int port) {
-        try(Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(port), 200);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
     }
 
     @Test
     public void helloWorldIsHelloWorld() throws Exception {
         Navigator navigator = new Navigator();
         navigator.open("http://localhost:8080");
-        String value = $("body").getText();
 
-        assertEquals("hello world", value);
+        assertEquals("hello world", $("body").getText());
     }
 
 }

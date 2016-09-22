@@ -39,6 +39,8 @@ public class PhantomJSResource extends ExternalResource {
 
     @Override
     protected void after() {
-        WebDriverRunner.getWebDriver().quit();
+        try {
+            WebDriverRunner.getWebDriver().quit();
+        }catch(Exception ignored){}
     }
 }
