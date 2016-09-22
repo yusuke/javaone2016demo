@@ -17,12 +17,16 @@ package ui;
 
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.impl.Navigator;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import static com.codeborne.selenide.Selenide.*;
+
+import static com.codeborne.selenide.Selenide.$;
 import static org.junit.Assert.assertEquals;
 
 public class UITestWithPhantomJS {

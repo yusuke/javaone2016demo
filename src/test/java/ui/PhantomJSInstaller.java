@@ -32,8 +32,14 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-final class PhantomJSInstaller {
+@SuppressWarnings("WeakerAccess")
+public final class PhantomJSInstaller {
     private static final String PHANTOM_JS_VERSION = "2.1.1";
+
+    @SuppressWarnings("WeakerAccess")
+    public static String ensureInstalled() throws IOException {
+        return ensureInstalled(Paths.get(System.getProperty("user.home"), "phantomJS").toString());
+    }
 
     /**
      * ensure PhantomJS is installed on the specified directory
@@ -41,7 +47,8 @@ final class PhantomJSInstaller {
      * @param installRoot directory to be installed
      * @return path to the PhantomJS binary
      */
-    static String ensureInstalled(String installRoot) throws IOException {
+    @SuppressWarnings("WeakerAccess")
+    public static String ensureInstalled(String installRoot) throws IOException {
         Path installRootPath = Paths.get(installRoot);
         String fileName;
         String dirName = "phantomjs-" + PHANTOM_JS_VERSION;
